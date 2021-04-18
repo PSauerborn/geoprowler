@@ -16,7 +16,7 @@ func NewEngine() *gin.Engine {
 
 	r.GET("/health_check", api.HealthCheckHandler)
 	// define routes used to retrieve data from API
-	r.GET("/location/:entityId", api.GetEntityHandler)
+	r.GET("/entities/:entityId", api.GetEntityHandler)
 	r.GET("/entities/all", api.GetEntitiesHandler)
 
 	// define routes to manage entities and update locations

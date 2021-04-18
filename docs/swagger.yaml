@@ -1,0 +1,339 @@
+openapi: 3.0.0
+info:
+  title: GeoProwler REST API
+  description: REST interface for the GeoProwler service
+  version: 0.0.1
+
+servers:
+  - url: https://main.project-gateway.app/api/geoprowler
+    description: Production REST Interface
+
+tags:
+  - name: Application Routes
+    description: routes used for REST application
+
+paths:
+  /health_check:
+    get:
+      summary: Returns health status of API/Service
+      tags:
+      - Application Routes
+      responses:
+        200:
+          description: JSON response containing health check message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+        500:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /entities/all:
+    get:
+      summary: Returns list of registered entities
+      tags:
+      - Application Routes
+      responses:
+        200:
+          description: JSON response containing entities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitiesResponse'
+        500:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /entities/new:
+    post:
+      summary: Creates new entity
+      tags:
+      - Application Routes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                meta:
+                  type: object
+                  properties:
+                    foo:
+                      type: string
+                      example: bar
+      responses:
+        201:
+          description: JSON response containing entity created message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityCreatedResponse'
+        400:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequestBodyResponse'
+        500:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /entities/{entityId}:
+    get:
+      summary: Returns entity with given unique identifier
+      tags:
+      - Application Routes
+      parameters:
+      - in: path
+        name: entityId
+        schema:
+          type: string
+        description: unique identifier of entity
+        required: true
+      responses:
+        200:
+          description: JSON response containing entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityResponse'
+        404:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundResponse'
+        500:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+    delete:
+      summary: Deletes entity with given unique identifier
+      tags:
+      - Application Routes
+      parameters:
+      - in: path
+        name: entityId
+        schema:
+          type: string
+        description: unique identifier of entity
+        required: true
+      responses:
+        200:
+          description: JSON response containing success message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUpdatedResponse'
+        400:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidLocationResponse'
+        404:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundResponse'
+        500:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+  /location/{entityId}:
+    put:
+      summary: Sets location for a given entity
+      tags:
+      - Application Routes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLocationRequest'
+      parameters:
+      - in: path
+        name: entityId
+        schema:
+          type: string
+        description: unique identifier of entity
+        required: true
+      responses:
+        200:
+            description: JSON response containing success message
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/EntityUpdatedResponse'
+        404:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityNotFoundResponse'
+        500:
+          description: JSON response containing error message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+components:
+  schemas:
+    HealthCheck:
+      properties:
+        http_code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Service running
+
+    InvalidRequestBodyResponse:
+      properties:
+        http_code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Invalid request body
+
+    InvalidLocationResponse:
+      properties:
+        http_code:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Invalid location
+
+    Unauthorized:
+      properties:
+        http_code:
+          type: integer
+          example: 401
+        message:
+          type: string
+          example: Unauthorized
+
+    Forbidden:
+      properties:
+        http_code:
+          type: integer
+          example: 403
+        message:
+          type: string
+          example: Forbidden
+
+    InternalServerError:
+      properties:
+        http_code:
+          type: integer
+          example: 500
+        message:
+          type: string
+          example: Internal server error
+
+    EntityCreatedResponse:
+      properties:
+        http_code:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Successfully created entity
+
+    EntityDeletedResponse:
+      properties:
+        http_code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Successfully deleted entity
+
+    EntityUpdatedResponse:
+      properties:
+        http_code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: Successfully updated location
+
+    EntityNotFoundResponse:
+      properties:
+        http_code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: Cannot find specified entity
+
+    Entity:
+      properties:
+        entity_id:
+          type: string
+          format: uuid
+          example: 001b6aad-fa51-40d0-88cf-c932a95b18c2
+        last_updated:
+          type: string
+          format: timestamp
+          example: '2021-04-18T08:06:36.840002Z'
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+              example: 86.56
+            longitude:
+              type: number
+              example: 167.45
+        meta:
+          type: object
+          properties:
+            foo:
+              type: string
+              example: bar
+
+    EntityResponse:
+      properties:
+        http_code:
+          type: number
+          example: 200
+        entity:
+          type: object
+          $ref: '#/components/schemas/Entity'
+
+    EntitiesResponse:
+      properties:
+        http_code:
+          type: number
+          example: 200
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entity'
+
+    UpdateLocationRequest:
+      properties:
+        latitude:
+          type: number
+          example: 86.56
+        longitude:
+          type: number
+          example: 167.45
