@@ -11,7 +11,7 @@ var cfg = utils.NewConfigMapWithValues(
 	map[string]string{
 		"postgres_host":     "192.168.99.100",
 		"postgres_port":     "5432",
-		"postgres_username": "postgres",
+		"postgres_user":     "postgres",
 		"postgres_password": "postgres-dev",
 		"postgres_database": "geoprowler",
 	},
