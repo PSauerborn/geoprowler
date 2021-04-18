@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+    api:
+        build:
+            context: ./
+            dockerfile: cmd/api/Dockerfile
+        restart: unless-stopped
+        container_name: geoprowler-api
+        networks:
+        - geoprowler
+        - core
+        - postgres
+        env_file:
+        - cmd/api/.env
+
+networks:
+  core:
+    name: core
+  postgres:
+    name: postgres
+  geoprowler:
+    name: geoprowler
