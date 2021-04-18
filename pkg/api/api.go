@@ -14,15 +14,15 @@ func NewEngine() *gin.Engine {
 	// and add routes for REST API
 	r := gin.Default()
 
-	r.GET("/health_check", api.HealthCheckHandler)
+	r.GET("/geoprowler/health_check", api.HealthCheckHandler)
 	// define routes used to retrieve data from API
-	r.GET("/entities/:entityId", api.GetEntityHandler)
-	r.GET("/entities/all", api.GetEntitiesHandler)
+	r.GET("/geoprowler/entities/:entityId", api.GetEntityHandler)
+	r.GET("/geoprowler/entities/all", api.GetEntitiesHandler)
 
 	// define routes to manage entities and update locations
-	r.POST("/entities/new", api.RegisterEntityHandler)
-	r.PUT("/location/:entityId", api.RegisterLocationHandler)
-	r.DELETE("/entities/:entityId", api.DeleteEntityHandler)
+	r.POST("/geoprowler/entities/new", api.RegisterEntityHandler)
+	r.PUT("/geoprowler/location/:entityId", api.RegisterLocationHandler)
+	r.DELETE("/geoprowler/entities/:entityId", api.DeleteEntityHandler)
 
 	return r
 }
